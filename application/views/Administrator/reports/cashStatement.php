@@ -178,6 +178,35 @@
 						</tr>
 					</tfoot>
 				</table>
+				<!-- Received Installment -->
+				<table class="table table-bordered table-condensed">
+					<thead>
+						<tr style="background: #dee4dc;">
+							<th colspan="4">Received Installment</th>
+						</tr>
+						<tr>
+							<th>Date</th>
+							<th>Customer</th>
+							<th>Received</th>
+						</tr>
+					</thead>
+					<tbody style="display:none;" v-bind:style="{display: receivedInstallments.length > 0 ? '' : 'none'}">
+						<tr v-for="payment in receivedInstallments">
+							<td>{{ payment.payment_date }}</td>
+							<td>{{ payment.Customer_Name }} ({{ moment(payment.due_date).format('MMM-YYYY') }})</td>
+							<td style="text-align:right;">{{ payment.paid_amount | decimal }}</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr style="font-weight:bold;">
+							<td colspan="2" style="text-align:right;">Total</td>
+							<td style="text-align:right;">
+								<span v-if="receivedInstallments.length == 0">0.00</span>
+								<span style="display:none;" v-bind:style="{display: receivedInstallments.length > 0 ? '' : 'none'}">{{ totalReceivedInstallment | decimal }}</span>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
 
 				<!-- Received from Suppliers -->
 				<table class="table table-bordered table-condensed">
@@ -738,6 +767,7 @@
 				sales: [],
 				purchases: [],
 				receivedFromCustomers: [],
+				receivedInstallments: [],
 				paidToCustomers: [],
 				receivedFromSuppliers: [],
 				paidToSuppliers: [],
@@ -774,6 +804,11 @@
 			totalReceivedFromCustomers() {
 				return this.receivedFromCustomers.reduce((prev, curr) => {
 					return prev + parseFloat(curr.CPayment_amount)
+				}, 0).toFixed(2);
+			},
+			totalReceivedInstallment() {
+				return this.receivedInstallments.reduce((prev, curr) => {
+					return prev + parseFloat(curr.paid_amount)
 				}, 0).toFixed(2);
 			},
 			totalPaidToCustomers() {
@@ -857,6 +892,7 @@
 			totalCashIn() {
 				return parseFloat(this.totalSales) +
 					parseFloat(this.totalReceivedFromCustomers) +
+					parseFloat(this.totalReceivedInstallment) +
 					parseFloat(this.totalReceivedFromSuppliers) +
 					parseFloat(this.totalCashReceived) +
 					parseFloat(this.totalLoanReceived) +
@@ -888,6 +924,7 @@
 				this.getSales();
 				this.getPurchases();
 				this.getReceivedFromCustomers();
+				this.getInstallmentReceived();
 				this.getPaidToCustomers();
 				this.getPaidToSuppliers();
 				this.getReceivedFromSuppliers();
@@ -927,6 +964,17 @@
 				axios.post('/get_customer_payments', filter)
 					.then(res => {
 						this.receivedFromCustomers = res.data.filter(p => p.CPayment_Paymentby != 'bank');
+					})
+			},
+			getInstallmentReceived() {
+				let filter = {
+					dateFrom: this.filter.dateFrom,
+					dateTo: this.filter.dateTo,
+					status: 'a'
+				}
+				axios.post('/get_installment', filter)
+					.then(res => {
+						this.receivedInstallments = res.data;
 					})
 			},
 

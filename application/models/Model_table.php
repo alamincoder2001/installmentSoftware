@@ -212,6 +212,12 @@ class Model_Table extends CI_Model
                 " . ($date == null ? "" : " and sm.SaleMaster_SaleDate < '$date'") . "
             ) as received_sales,
             (
+                select ifnull(sum(ins.paid_amount), 0) from tbl_installment ins
+                where ins.branch_id= " . $this->session->userdata('BRANCHid') . "
+                and ins.status = 'a'
+                " . ($date == null ? "" : " and ins.payment_date < '$date'") . "
+            ) as installment_amount,
+            (
                 select ifnull(sum(cp.CPayment_amount), 0) from tbl_customer_payment cp
                 where cp.CPayment_TransactionType = 'CR'
                 and cp.status = 'a'
@@ -335,7 +341,7 @@ class Model_Table extends CI_Model
             ) as buy_asset,
             /* total */
             (
-                select received_sales + received_customer + received_supplier + received_cash + bank_withdraw + loan_received + loan_initial_balance + invest_received + sale_asset
+                select received_sales + installment_amount + received_customer + received_supplier + received_cash + bank_withdraw + loan_received + loan_initial_balance + invest_received + sale_asset
             ) as total_in,
             (
                 select paid_purchase + paid_customer + paid_supplier + paid_cash + bank_deposit + employee_payment + loan_payment + invest_payment + buy_asset

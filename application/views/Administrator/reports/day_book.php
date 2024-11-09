@@ -168,6 +168,16 @@
 										<td>{{ payment.totalAmount | decimal }}</td>
 									</tr>
 								</template>
+								<template v-if="receivedInstallments.length > 0">
+									<tr>
+										<td class="sub-heading">Installment Received</td>
+										<td class="sub-value">{{ totalReceivedInstallment }}</td>
+									</tr>
+									<tr v-for="payment in receivedInstallments">
+										<td>{{ payment.Customer_Name }}</td>
+										<td>{{ payment.totalAmount | decimal }}</td>
+									</tr>
+								</template>
 								<template v-if="cashReceived.length > 0">
 									<tr>
 										<td class="sub-heading">Cash Received</td>
@@ -434,6 +444,7 @@
 				asset_purchases: [],
 				purchases: [],
 				receivedFromCustomers: [],
+				receivedInstallments: [],
 				paidToCustomers: [],
 				receivedFromSuppliers: [],
 				paidToSuppliers: [],
@@ -487,6 +498,11 @@
 			},
 			totalReceivedFromCustomers() {
 				return this.receivedFromCustomers.reduce((prev, curr) => {
+					return prev + parseFloat(curr.totalAmount)
+				}, 0).toFixed(2);
+			},
+			totalReceivedInstallment() {
+				return this.receivedInstallments.reduce((prev, curr) => {
 					return prev + parseFloat(curr.totalAmount)
 				}, 0).toFixed(2);
 			},
@@ -564,6 +580,7 @@
 					parseFloat(this.totalAssetSales) +
 					parseFloat(this.totalInitialLoan) +
 					parseFloat(this.totalReceivedFromCustomers) +
+					parseFloat(this.totalReceivedInstallment) +
 					parseFloat(this.totalReceivedFromSuppliers) +
 					parseFloat(this.totalCashReceived);
 			},
@@ -595,6 +612,7 @@
 				this.getAssetPurchases();
 				this.getPurchases();
 				this.getReceivedFromCustomers();
+				this.getInstallmentReceived();
 				this.getPaidToCustomers();
 				this.getPaidToSuppliers();
 				this.getReceivedFromSuppliers();
@@ -716,6 +734,27 @@
 							return payment[0];
 						})
 						this.receivedFromCustomers = payments;
+					})
+			},
+
+			getInstallmentReceived() {
+				let filter = {
+					dateFrom: this.filter.dateFrom,
+					dateTo: this.filter.dateTo,
+					status: 'a'
+				}
+				axios.post('/get_installment', filter)
+					.then(res => {
+						let payments = res.data;
+						payments = _.groupBy(payments, 'customer_id');
+						payments = _.toArray(payments);
+						payments = payments.map(payment => {
+							payment[0].totalAmount = payment.reduce((p, c) => {
+								return p + parseFloat(c.paid_amount)
+							}, 0);
+							return payment[0];
+						})
+						this.receivedInstallments = payments;
 					})
 			},
 

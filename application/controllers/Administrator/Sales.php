@@ -353,6 +353,10 @@ class Sales extends CI_Controller
         if (isset($data->customerType) && $data->customerType != '') {
             $clauses .= " and sm.customerType = '$data->customerType'";
         }
+        
+        if (isset($data->isInstallment) && $data->isInstallment != '') {
+            $clauses .= " and sm.is_installment = '$data->isInstallment'";
+        }
 
         if (isset($data->forSearch) && $data->forSearch != '') {
             $limit .= "limit 20";

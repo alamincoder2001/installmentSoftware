@@ -931,6 +931,19 @@ class Account extends CI_Controller
             and sm.SaleMaster_SaleDate between '$data->fromDate' and '$data->toDate'
             
             UNION
+            select 
+                ins.id as id,
+                ins.payment_date as date,
+                concat('Installment Payment - ', c.Customer_Name, ' - ', c.Customer_Code) as description,
+                ins.paid_amount as in_amount,
+                0.00 as out_amount
+            from tbl_installment ins 
+            left join tbl_customer c on c.Customer_SlNo = ins.customer_id
+            where ins.status = 'a'
+            and ins.branch_id = '$this->brunch'
+            and ins.payment_date between '$data->fromDate' and '$data->toDate'
+            
+            UNION
             
             select 
                 cp.CPayment_id as id,
@@ -1183,7 +1196,7 @@ class Account extends CI_Controller
             and ass.buy_or_sale = 'buy'
             and ass.as_date between '$data->fromDate' and '$data->toDate'
 
-            order by date, id
+            order by date, id asc
         ")->result();
 
         $ledger = array_map(function ($ind, $row) use ($previousBalance, $ledger) {

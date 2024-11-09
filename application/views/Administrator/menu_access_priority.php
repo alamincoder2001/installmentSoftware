@@ -50,6 +50,7 @@
                     <li><input type="checkbox" class="access" value="cashTransaction" v-model="access"> Cash Transactions</li>
                     <li><input type="checkbox" class="access" value="bank_transactions" v-model="access"> Bank Transactions</li>
                     <li><input type="checkbox" class="access" value="customerPaymentPage" v-model="access"> Customer Payment</li>
+                    <li><input type="checkbox" class="access" value="installment_payment" v-model="access"> Installment Receive </li>
                     <li><input type="checkbox" class="access" value="supplierPayment" v-model="access"> Supplier Payment</li>
                     <li><input type="checkbox" class="access" value="cash_view" v-model="access"> Cash View</li>
                     <li><input type="checkbox" class="access" value="account" v-model="access"> Transaction Accounts</li>

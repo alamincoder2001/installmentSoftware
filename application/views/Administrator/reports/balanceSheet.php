@@ -73,6 +73,10 @@
 								<td style="text-align:right;">{{ totalReceivedFromCustomers | decimal }}</td>
 							</tr>
 							<tr>
+								<td>Installment Received</td>
+								<td style="text-align:right;">{{ totalReceivedInstallment | decimal }}</td>
+							</tr>
+							<tr>
 								<td>Cash Received</td>
 								<td style="text-align:right;">{{ totalCashReceived | decimal }}</td>
 							</tr>
@@ -202,6 +206,7 @@
 				sales: [],
 				purchases: [],
 				receivedFromCustomers: [],
+				receivedInstallments: [],
 				paidToCustomers: [],
 				receivedFromSuppliers: [],
 				paidToSuppliers: [],
@@ -239,6 +244,11 @@
 			totalReceivedFromCustomers() {
 				return this.receivedFromCustomers.reduce((prev, curr) => {
 					return prev + parseFloat(curr.CPayment_amount)
+				}, 0).toFixed(2);
+			},
+			totalReceivedInstallment() {
+				return this.receivedInstallments.reduce((prev, curr) => {
+					return prev + parseFloat(curr.paid_amount)
 				}, 0).toFixed(2);
 			},
 			totalPaidToCustomers() {
@@ -305,6 +315,7 @@
 			totalCashIn() {
 				return parseFloat(this.totalSales) +
 					parseFloat(this.totalReceivedFromCustomers) +
+					parseFloat(this.totalReceivedInstallment) +
 					parseFloat(this.totalReceivedFromSuppliers) +
 					parseFloat(this.totalCashReceived) +
 					parseFloat(this.totalLoanReceived) +
@@ -333,6 +344,7 @@
 				await this.getSales();
 				await this.getPurchases();
 				await this.getReceivedFromCustomers();
+				await this.getInstallmentReceived();
 				await this.getPaidToCustomers();
 				await this.getPaidToSuppliers();
 				await this.getReceivedFromSuppliers();
@@ -373,6 +385,18 @@
 				await axios.post('/get_customer_payments', filter)
 					.then(res => {
 						this.receivedFromCustomers = res.data.filter(p => p.CPayment_Paymentby != 'bank');
+					})
+			},
+
+			getInstallmentReceived() {
+				let filter = {
+					dateFrom: this.filter.dateFrom,
+					dateTo: this.filter.dateTo,
+					status: 'a'
+				}
+				axios.post('/get_installment', filter)
+					.then(res => {
+						this.receivedInstallments = res.data;
 					})
 			},
 

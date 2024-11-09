@@ -801,7 +801,7 @@ if ($module == 'dashboard' or $module == '') {
 			<li class="<?= current_url() == '/installment_payment' ? 'active' : '' ?>">
 				<a href="<?php echo base_url(); ?>installment_payment">
 					<i class="menu-icon fa fa-money"></i>
-					<span class="menu-text"> Installment Payment </span>
+					<span class="menu-text"> Installment Receive </span>
 				</a>
 				<b class="arrow"></b>
 			</li>

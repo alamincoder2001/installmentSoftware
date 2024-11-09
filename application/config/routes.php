@@ -211,6 +211,9 @@ $route['chalan/(:any)'] = 'Administrator/Sales/chalan/$1';
 $route['installment_payment'] = 'Administrator/Installment';
 $route['get_installment'] = 'Administrator/Installment/getInstallment';
 $route['update_installment'] = 'Administrator/Installment/updateInstallment';
+$route['add_installment_payment'] = 'Administrator/Installment/addInstallmentPayment';
+$route['update_installment_payment'] = 'Administrator/Installment/updateInstallmentPayment';
+$route['delete_installment_payment'] = 'Administrator/Installment/deleteInstallmentPayment';
 $route['check_installment_payment'] = 'Administrator/Installment/checkInstallmentPayment';
 
 

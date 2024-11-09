@@ -422,7 +422,7 @@
 												<label class="col-xs-6 control-label" style="margin:0;">Installment</label>
 												<label class="col-xs-6 control-label" style="margin:0;">Amount</label>
 												<div class="col-xs-6">
-													<input type="number" min="0" step="any" id="installment" class="form-control" v-model="sales.installment" @input="installmentCalculate" />
+													<input type="number" min="0" step="any" id="installment" :readonly="selectedCustomer.Customer_Type == 'G' ? true : false" class="form-control" v-model="sales.installment" @input="installmentCalculate" />
 												</div>
 												<div class="col-xs-6">
 													<input type="number" min="0" step="any" id="installment_amount" class="form-control" v-model="sales.installment_amount" readonly />
