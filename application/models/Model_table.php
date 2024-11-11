@@ -705,6 +705,12 @@ class Model_Table extends CI_Model
                 " . ($date == null ? "" : " and cp.CPayment_date < '$date'") . "
                 and cp.status = 'a') as cashReceived,
            
+            (select ifnull(sum(ins.payment_amount), 0.00) 
+                from tbl_installment ins 
+                where ins.customer_id = c.Customer_SlNo 
+                " . ($date == null ? "" : " and ins.due_date < '$date'") . "
+                and ins.status = 'p') as installmentDue,
+            
             (select ifnull(sum(ins.paid_amount), 0.00) 
                 from tbl_installment ins 
                 where ins.customer_id = c.Customer_SlNo 

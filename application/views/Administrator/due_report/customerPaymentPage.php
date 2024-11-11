@@ -119,8 +119,14 @@
 								<div class="form-group">
 									<label class="col-md-4 control-label">Due</label>
 									<label class="col-md-1">:</label>
-									<div class="col-md-7">
+									<div class="col-md-3">
 										<input type="text" class="form-control" v-model="payment.CPayment_previous_due" disabled>
+									</div>
+									<div class="col-md-2 no-padding-left">
+										<input type="text" class="form-control" v-model="payment.CPayment_installment_due" title="Installment Due" disabled>
+									</div>
+									<div class="col-md-2 no-padding-left">
+										<input type="text" class="form-control" :value="parseFloat(payment.CPayment_previous_due - payment.CPayment_installment_due).toFixed(2)" title="Normal Due" disabled>
 									</div>
 								</div>
 							</div>
@@ -218,7 +224,8 @@
 					CPayment_date: moment().format('YYYY-MM-DD'),
 					CPayment_amount: '',
 					CPayment_notes: '',
-					CPayment_previous_due: 0
+					CPayment_previous_due: 0,
+					CPayment_installment_due: 0
 				},
 				payments: [],
 				customers: [],
@@ -322,6 +329,7 @@
 					customerId: this.selectedCustomer.Customer_SlNo
 				}).then(res => {
 					this.payment.CPayment_previous_due = res.data[0].dueAmount;
+					this.payment.CPayment_installment_due = res.data[0].installmentDue;
 				})
 			},
 			async onSearchCustomer(val, loading) {
@@ -362,9 +370,16 @@
 				}
 				if (this.selectedCustomer == null || this.selectedCustomer.Customer_SlNo == undefined) {
 					Swal.fire({
-							icon: "error",
-							text: "Select Customer",
-						});
+						icon: "error",
+						text: "Select Customer",
+					});
+					return;
+				}
+				if (parseFloat(this.payment.CPayment_previous_due - this.payment.CPayment_installment_due) < parseFloat(this.payment.CPayment_amount)) {
+					Swal.fire({
+						icon: "error",
+						text: "Due amount zero",
+					});
 					return;
 				}
 
@@ -438,6 +453,7 @@
 				}
 
 				this.payment.CPayment_previous_due = 0;
+				this.payment.CPayment_installment_due = 0;
 			}
 		}
 	})
