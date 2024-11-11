@@ -473,8 +473,25 @@ class Customer extends CI_Controller
             and cp.status = 'a'
 
             UNION
-            select
+            select 
                 'c' as sequence,
+                ins.id as id,
+                ins.payment_date as date,
+                concat('Installment Received - ', sm.SaleMaster_InvoiceNo, ' - ', DATE_FORMAT(ins.due_date, '%M/%Y')) as description,
+                0 as bill,
+                ins.paid_amount as paid,
+                0 as due,
+                0.00 as returned,
+                0.00 as paid_out,
+                0.00 as balance
+            from tbl_installment ins
+            left join tbl_salesmaster sm on sm.SaleMaster_SlNo = ins.sale_id
+            where ins.customer_id = '$data->customerId'
+            and ins.status = 'a'
+
+            UNION
+            select
+                'd' as sequence,
                 cp.CPayment_id as id,
                 cp.CPayment_date as date,
                 concat('Paid - ', 
@@ -497,7 +514,7 @@ class Customer extends CI_Controller
             
             UNION
             select
-                'd' as sequence,
+                'e' as sequence,
                 sr.SaleReturn_SlNo as id,
                 sr.SaleReturn_ReturnDate as date,
                 'Sales return' as description,

@@ -259,7 +259,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 					<div class="modal-content">
 						<div class="modal-header">
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
-							<h4 class="modal-title">Update Installment</h4>
+							<h4 class="modal-title">Update Installment (<span class="customerName"></span>)</h4>
 						</div>
 						<div class="modal-body">
 							<input type="hidden" name="id" class="form-control" id="id" />
@@ -361,17 +361,18 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 							let tr = `
 							<tr>
 								<td style="font-size:11px;padding:4px;">${moment(item.due_date).format('DD-MM-YYYY')}</td>
+								<td style="font-size:11px;padding:4px;">${moment(item.due_date).format('MMMM-YYYY')}</td>
 								<td style="font-size:11px;padding:4px;">${item.Customer_Name}</td>
 								<td style="font-size:11px;padding:4px;">${item.payment_amount}</td>
 								<td style="font-size:11px;padding:4px;">
-									<i onclick="updateInstallment('today', '${item.id}', '${item.due_date}')" class="fa fa-edit" style="font-size:13px;cursor:pointer;"></i>
+									<i onclick="updateInstallment('today', '${item.id}', '${item.due_date}', '${item.Customer_Name}')" class="fa fa-edit" style="font-size:13px;cursor:pointer;"></i>
 								</td>
 							</tr>
 						`;
 							$(".todayPayment").find('tbody').append(tr);
 						})
 					} else {
-						$(".todayPayment").find('tbody').html(`<tr><td colspan="4" style="font-size:11px;padding:4px;">Not Found Data</td></tr>`);
+						$(".todayPayment").find('tbody').html(`<tr><td colspan="5" style="font-size:11px;padding:4px;">Not Found Data</td></tr>`);
 					}
 				}
 			})
@@ -396,17 +397,18 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 							let tr = `
 								<tr>
 									<td style="font-size:11px;padding:4px;">${moment(item.due_date).format('DD-MM-YYYY')}</td>
+									<td style="font-size:11px;padding:4px;">${moment(item.due_date).format('MMMM-YYYY')}</td>
 									<td style="font-size:11px;padding:4px;">${item.Customer_Name}</td>
 									<td style="font-size:11px;padding:4px;">${item.payment_amount}</td>
 									<td style="font-size:11px;padding:4px;">
-										<i onclick="updateInstallment('past', '${item.id}', '${item.due_date}')" class="fa fa-edit" style="font-size:13px;cursor:pointer;"></i>
+										<i onclick="updateInstallment('past', '${item.id}', '${item.due_date}', '${item.Customer_Name}')" class="fa fa-edit" style="font-size:13px;cursor:pointer;"></i>
 									</td>
 								</tr>
 							`;
 							$(".pastPayment").find('tbody').append(tr);
 						})
 					} else {
-						$(".pastPayment").find('tbody').html(`<tr><td colspan="4" style="font-size:11px;padding:4px;">Not Found Data</td></tr>`);
+						$(".pastPayment").find('tbody').html(`<tr><td colspan="5" style="font-size:11px;padding:4px;">Not Found Data</td></tr>`);
 					}
 				}
 			})
@@ -431,6 +433,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 							let tr = `
 								<tr>
 									<td style="font-size:11px;padding:4px;">${moment(item.due_date).format('DD-MM-YYYY')}</td>
+									<td style="font-size:11px;padding:4px;">${moment(item.due_date).format('MMMM-YYYY')}</td>
 									<td style="font-size:11px;padding:4px;">${item.Customer_Name}</td>
 									<td style="font-size:11px;padding:4px;">${item.payment_amount}</td>
 								</tr>
@@ -438,7 +441,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 							$(".upcomingPayment").find('tbody').append(tr);
 						})
 					} else {
-						$(".upcomingPayment").find('tbody').html(`<tr><td colspan="3" style="font-size:11px;padding:4px;">Not Found Data</td></tr>`);
+						$(".upcomingPayment").find('tbody').html(`<tr><td colspan="4" style="font-size:11px;padding:4px;">Not Found Data</td></tr>`);
 					}
 				}
 			})
@@ -447,11 +450,12 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 		getUpcomingPayment();
 
 		//update installment
-		function updateInstallment(type, id, due_date) {
+		function updateInstallment(type, id, due_date, customer) {
 			$('#updateInstallmentPayment').modal('show');
 			$('#updateInstallmentPayment').find('#id').val(id);
 			$('#updateInstallmentPayment').find('#type').val(type);
 			$('#updateInstallmentPayment').find('#due_date').val(due_date);
+			$('#updateInstallmentPayment').find('.customerName').text(customer);
 		}
 
 		function updateInstallmentPayment(event) {

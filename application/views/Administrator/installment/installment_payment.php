@@ -342,13 +342,13 @@
                     this.customers = res.data;
                 })
             },
-            getSale() {
+            getSaleInvoice() {
                 let filter = {
                     customerId: this.selectedCustomer.Customer_SlNo,
-                    isInstallment: 'true'
+                    isEdit: this.isEdit
                 }
-                axios.post('/get_sales', filter).then(res => {
-                    this.invoices = res.data.sales;
+                axios.post('/get_installment_sale_invoice', filter).then(res => {
+                    this.invoices = res.data;
                 })
             },
             getInstallment() {
@@ -362,12 +362,12 @@
                 }
                 let filter = {
                     customerId: this.selectedCustomer.Customer_SlNo,
-                    saleId: this.selectedInvoice.SaleMaster_SlNo,
+                    saleId: this.selectedInvoice ? this.selectedInvoice.SaleMaster_SlNo : '',
                     isEdit: this.isEdit
                 }
                 axios.post('/get_installment', filter).then(res => {
                     this.installments = res.data.map(item => {
-                        item.amount = item.status == 'a' ? item.paid_amount : item.payment_amount;
+                        item.amount = item.status == 'a' ? (+item.paid_amount + +item.discount) : item.payment_amount;
                         return item;
                     })
                     if (this.isEdit != '') {
@@ -388,7 +388,7 @@
                     }).then(res => {
                         this.payment.CPayment_previous_due = res.data[0].dueAmount;
                     })
-                    this.getSale();
+                    this.getSaleInvoice();
                 }
 
             },
@@ -434,7 +434,10 @@
             saveInstallmentPayment() {
                 if (this.payment.payment_type == 'bank') {
                     if (this.selectedAccount == null) {
-                        alert('Select an account');
+                        Swal.fire({
+                            icon: "error",
+                            text: "Select an account",
+                        });
                         return;
                     } else {
                         this.payment.accountId = this.selectedAccount.account_id;
@@ -443,12 +446,18 @@
                     this.payment.accountId = null;
                 }
                 if (this.selectedCustomer == null || this.selectedCustomer.Customer_SlNo == undefined) {
-                    alert('Select Customer');
+                    Swal.fire({
+                        icon: "error",
+                        text: "Select Customer",
+                    });
                     return;
                 }
 
                 if (parseFloat(this.payment.dueAmount) < parseFloat(+this.payment.paid_amount + +this.payment.discount)) {
-                    alert('You can not paid grater than due amount');
+                    Swal.fire({
+                        icon: "error",
+                        text: "You can not paid grater than due amount",
+                    });
                     return;
                 }
 
@@ -514,6 +523,7 @@
                 })
             },
             resetForm() {
+                this.isEdit = '';
                 this.payment.id = 0;
                 this.payment.customer_id = '';
                 this.payment.paid_amount = '';
@@ -524,6 +534,8 @@
                     Customer_Name: ''
                 }
 
+                this.invoices = [];
+                this.installments = [];
                 this.payment.dueAmount = 0;
             }
         }

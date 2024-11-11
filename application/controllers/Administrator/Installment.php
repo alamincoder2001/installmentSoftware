@@ -26,6 +26,35 @@ class Installment extends CI_Controller
         $this->load->view('Administrator/index', $data);
     }
 
+    public function getInstallmentSaleInvoice()
+    {
+        $data = json_decode($this->input->raw_input_stream);
+        $clauses = "";
+        if (isset($data->customerId) && $data->customerId != '') {
+            $clauses .= " and ins.customer_id = '$data->customerId'";
+        }
+        if (isset($data->isEdit) && $data->isEdit != '') {
+        } else {
+            if (isset($data->status) && $data->status != '') {
+                $clauses .= " and ins.status = '$data->status'";
+            } else {
+                $clauses .= " and ins.status = 'p'";
+            }
+        }
+        $query = $this->db->query("select
+                            sm.SaleMaster_SlNo,
+                            sm.SaleMaster_InvoiceNo,
+                            sm.SaleMaster_SaleDate,
+                            sm.SalseCustomer_IDNo
+                            from tbl_installment ins
+                            left join tbl_salesmaster sm on sm.SaleMaster_SlNo = ins.sale_id
+                            where ins.branch_id = '$this->sbrunch'
+                            $clauses
+                            group by ins.sale_id")->result();
+
+        echo json_encode($query);
+    }
+
     public function getInstallment()
     {
         $data = json_decode($this->input->raw_input_stream);

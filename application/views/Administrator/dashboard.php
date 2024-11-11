@@ -70,13 +70,13 @@ if ($module == 'dashboard' or $module == '') { ?>
 
 				<!-- module/HRPayroll -->
 				<div class="col-md-2 col-xs-6 section4">
-					<a href="<?php echo base_url(); ?>module/HRPayroll">
+					<a href="<?php echo base_url(); ?>customer">
 						<div class="col-md-12 section122" style="background-color:#ecffd9;" onmouseover="this.style.background = '#cfff9f'" onmouseout="this.style.background = '#ecffd9'">
 							<div class="logo">
-								<i class="fa fa-users"></i>
+								<i class="fa fa-user-plus"></i>
 							</div>
 							<div class="textModule">
-								HR & Payroll
+								Customer Entry
 							</div>
 						</div>
 					</a>
@@ -124,13 +124,13 @@ if ($module == 'dashboard' or $module == '') { ?>
 
 
 				<div class="col-md-2 col-xs-6 section4">
-					<a href="<?php echo base_url(); ?>Login/logout">
+					<a href="<?php echo base_url(); ?>customerPaymentReport">
 						<div class="col-md-12 section122" style="background-color:#ffe3d7;" onmouseover="this.style.background = '#ffc0a6'" onmouseout="this.style.background = '#ffe3d7'">
 							<div class="logo">
-								<i class="fa fa-sign-out"></i>
+								<i class="fa fa-list"></i>
 							</div>
 							<div class="textModule">
-								LogOut
+								Customer Ledger
 							</div>
 						</div>
 					</a>
@@ -146,6 +146,7 @@ if ($module == 'dashboard' or $module == '') { ?>
 						<thead>
 							<tr style="background: #767676;">
 								<th>Date</th>
+								<th>Month</th>
 								<th>Customer</th>
 								<th>Installment</th>
 								<th>Action</th>
@@ -162,6 +163,7 @@ if ($module == 'dashboard' or $module == '') { ?>
 						<thead>
 							<tr style="background: #767676;">
 								<th>Date</th>
+								<th>Month</th>
 								<th>Customer</th>
 								<th>Installment</th>
 								<th>Action</th>
@@ -178,6 +180,7 @@ if ($module == 'dashboard' or $module == '') { ?>
 						<thead>
 							<tr style="background: #767676;">
 								<th>Date</th>
+								<th>Month</th>
 								<th>Customer</th>
 								<th>Installment</th>
 							</tr>

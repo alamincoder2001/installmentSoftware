@@ -215,6 +215,7 @@ $route['add_installment_payment'] = 'Administrator/Installment/addInstallmentPay
 $route['update_installment_payment'] = 'Administrator/Installment/updateInstallmentPayment';
 $route['delete_installment_payment'] = 'Administrator/Installment/deleteInstallmentPayment';
 $route['check_installment_payment'] = 'Administrator/Installment/checkInstallmentPayment';
+$route['get_installment_sale_invoice'] = 'Administrator/Installment/getInstallmentSaleInvoice';
 
 
 

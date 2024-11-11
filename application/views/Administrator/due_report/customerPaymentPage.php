@@ -349,7 +349,10 @@
 			saveCustomerPayment() {
 				if (this.payment.CPayment_Paymentby == 'bank') {
 					if (this.selectedAccount == null) {
-						alert('Select an account');
+						Swal.fire({
+							icon: "error",
+							text: "Select an account",
+						});
 						return;
 					} else {
 						this.payment.account_id = this.selectedAccount.account_id;
@@ -358,7 +361,10 @@
 					this.payment.account_id = null;
 				}
 				if (this.selectedCustomer == null || this.selectedCustomer.Customer_SlNo == undefined) {
-					alert('Select Customer');
+					Swal.fire({
+							icon: "error",
+							text: "Select Customer",
+						});
 					return;
 				}
 

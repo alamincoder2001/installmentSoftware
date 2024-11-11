@@ -87,7 +87,7 @@
 						<tr>
 							<th>Customer Id</th>
 							<th>Customer Name</th>
-							<th>Owner Name</th>
+							<th>Reference Name</th>
 							<th>Address</th>
 							<th>Customer Mobile</th>
 							<th>Due Amount</th>

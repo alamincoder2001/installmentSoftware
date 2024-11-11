@@ -406,7 +406,7 @@
 						<div class="col-xs-12">
 							<div class="table-responsive">
 								<table style="color:#000;margin-bottom: 0px;border-collapse: collapse;">
-									<tr>
+									<tr v-if="selectedCustomer.Customer_Type != 'G'" style="display: none;" :style="{display: selectedCustomer.Customer_Type != 'G' ? '' : 'none'}">
 										<td>
 											<div class="form-group">
 												<label style="display:flex;align-items:center;gap:5px;margin-bottom:10px;" class="col-xs-12 control-label no-padding-right" id="is_installment">
@@ -851,6 +851,15 @@
 					this.sales.installment_amount = parseFloat(0).toFixed(2);
 					return;
 				}
+				if(parseFloat(this.sales.due) <= 0){
+					this.sales.installment = 0;
+					this.sales.installment_amount = parseFloat(0).toFixed(2);
+					Swal.fire({
+						icon: "error",
+						text: "Due amount zero",
+					});
+					return;
+				}
 				this.sales.installment_amount = parseFloat(this.sales.due / this.sales.installment).toFixed(2);
 			},
 			async saveSales() {
@@ -871,6 +880,13 @@
 					Swal.fire({
 						icon: "error",
 						text: "Cart is empty",
+					});
+					return;
+				}
+				if (this.sales.is_installment == 'true' && this.sales.installment == 0 && this.selectedCustomer.Customer_Type != 'G') {
+					Swal.fire({
+						icon: "error",
+						text: "Please fill up the Installment",
 					});
 					return;
 				}

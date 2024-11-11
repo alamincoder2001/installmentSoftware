@@ -110,7 +110,7 @@
 						</div>
 
 						<div class="form-group clearfix">
-							<label class="control-label col-md-4">Owner Name:</label>
+							<label class="control-label col-md-4">Reference Name:</label>
 							<div class="col-md-7">
 								<input type="text" class="form-control" v-model="customer.owner_name">
 							</div>
@@ -145,7 +145,7 @@
 						</div>
 
 						<div class="form-group clearfix">
-							<label class="control-label col-md-4">Office Phone:</label>
+							<label class="control-label col-md-4">Reference Phone:</label>
 							<div class="col-md-7">
 								<input type="text" class="form-control" v-model="customer.Customer_OfficePhone">
 							</div>
@@ -311,7 +311,7 @@
 						align: 'center'
 					},
 					{
-						label: 'Owner Name',
+						label: 'Reference Name',
 						field: 'owner_name',
 						align: 'center'
 					},
