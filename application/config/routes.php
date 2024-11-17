@@ -218,7 +218,6 @@ $route['check_installment_payment'] = 'Administrator/Installment/checkInstallmen
 $route['get_installment_sale_invoice'] = 'Administrator/Installment/getInstallmentSaleInvoice';
 
 
-
 //Quotation================
 $route['quotation']                = 'Administrator/Quotation';
 $route['quotation/(:any)']         = 'Administrator/Quotation/editQuotation/$1';
