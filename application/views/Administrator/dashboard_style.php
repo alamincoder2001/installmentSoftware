@@ -2,7 +2,6 @@
 	.header {
 		border-bottom: 1px double #e86100;
 		width: 100%;
-		/* height: 60px; */
 		margin-top: 20px;
 		margin-bottom: 0;
 		padding-bottom: 10px;
@@ -17,13 +16,12 @@
 		padding: 6px 10px;
 		padding-left: 2px;
 		background: #4c8fbd;
-		/* background: #63e3ff; */
 		color: white;
 		border-radius: 2px;
 		transition: 0.1ms ease-in-out;
 	}
 
-	.card:hover{
+	.card:hover {
 		transition: 0.1ms ease-in-out;
 		background-color: #6ca5cdd4;
 	}
@@ -117,6 +115,14 @@
 	@media (min-width: 320px) and (max-width: 600px) {
 		.mobileView {
 			display: block;
+		}
+
+		.card span {
+			font-size: 10px;
+			font-weight: 600;
+		}
+		.no-padding-right {
+			padding-right: 12px !important;
 		}
 	}
 
