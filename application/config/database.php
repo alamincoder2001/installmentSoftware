@@ -8,9 +8,13 @@ $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
 
-	'username' => 'tmtradin',
-	'password' => '@#$%fknviXC85769??"{P',
+	'username' => 'root',
+	'password' => '',
 	'database' => 'tmtradin_rohimatelecom',
+
+	// 'username' => 'tmtradin',
+	// 'password' => '@#$%fknviXC85769??"{P',
+	// 'database' => 'tmtradin_rohimatelecom',
 
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',

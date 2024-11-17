@@ -353,7 +353,7 @@ class Sales extends CI_Controller
         if (isset($data->customerType) && $data->customerType != '') {
             $clauses .= " and sm.customerType = '$data->customerType'";
         }
-        
+
         if (isset($data->isInstallment) && $data->isInstallment != '') {
             $clauses .= " and sm.is_installment = '$data->isInstallment'";
         }
@@ -540,8 +540,8 @@ class Sales extends CI_Controller
                 }
             }
 
+            $this->db->where('sale_id', $salesId)->delete('tbl_installment');
             if ($data->sales->is_installment == 'true' && $data->customer->Customer_Type != 'G') {
-                $this->db->where('sale_id', $salesId)->delete('tbl_installment');
                 $currentDate = new DateTime($data->sales->salesDate);
                 for ($i = 1; $i <= $data->sales->installment; $i++) {
                     $newDate = clone $currentDate;
@@ -1127,23 +1127,25 @@ class Sales extends CI_Controller
             foreach ($saleDetails as $detail) {
                 /*Get Product Current Quantity*/
                 $totalQty = $this->db->where(['product_id' => $detail->Product_IDNo, 'branch_id' => $sale->branch_id])->get('tbl_currentinventory')->row()->sales_quantity;
-
                 /* Subtract Product Quantity form  Current Quantity  */
                 $newQty = $totalQty - $detail->SaleDetails_TotalQuantity;
-
                 /*Update Sales Inventory*/
                 $this->db->set('sales_quantity', $newQty)->where(['product_id' => $detail->Product_IDNo, 'branch_id' => $sale->branch_id])->update('tbl_currentinventory');
             }
-            $sale = array(
+            $saleInfo = array(
                 'status' => 'd',
                 'DeletedBy' => $this->session->userdata('userId'),
                 'DeletedTime' => date('Y-m-d H:i:s'),
                 'last_update_ip' => get_client_ip(),
             );
+            //Delete installment
+            if ($sale->is_installment == 'true') {
+                $this->db->set($saleInfo)->where('sale_id', $saleId)->update('tbl_installment');
+            }
             /*Delete Sale Details*/
-            $this->db->set($sale)->where('SaleMaster_IDNo', $saleId)->update('tbl_saledetails');
+            $this->db->set($saleInfo)->where('SaleMaster_IDNo', $saleId)->update('tbl_saledetails');
             /*Delete Sale Master Data*/
-            $this->db->set($sale)->where('SaleMaster_SlNo', $saleId)->update('tbl_salesmaster');
+            $this->db->set($saleInfo)->where('SaleMaster_SlNo', $saleId)->update('tbl_salesmaster');
             $res = ['success' => true, 'message' => 'Sale deleted'];
         } catch (Exception $ex) {
             $res = ['success' => false, 'message' => $ex->getMessage()];

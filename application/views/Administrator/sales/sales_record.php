@@ -170,7 +170,7 @@
 									<a href="" title="Chalan" v-bind:href="`/chalan/${sale.SaleMaster_SlNo}`" target="_blank"><i class="fa fa-file-o"></i></a>
 									<?php if ($this->session->userdata('accountType') != 'u') { ?>
 										<a href="javascript:" title="Edit Sale" @click="checkReturnAndEdit(sale)"><i class="fa fa-edit"></i></a>
-										<a href="" title="Delete Sale" @click.prevent="deleteSale(sale.SaleMaster_SlNo)"><i class="fa fa-trash"></i></a>
+										<a href="" title="Delete Sale" @click.prevent="deleteSale(sale)"><i class="fa fa-trash"></i></a>
 									<?php } ?>
 								</td>
 							</tr>
@@ -235,7 +235,7 @@
 								<a href="" title="Chalan" v-bind:href="`/chalan/${sale.SaleMaster_SlNo}`" target="_blank"><i class="fa fa-file-o"></i></a>
 								<?php if ($this->session->userdata('accountType') != 'u') { ?>
 									<a href="javascript:" title="Edit Sale" @click="checkReturnAndEdit(sale)"><i class="fa fa-edit"></i></a>
-									<a href="" title="Delete Sale" @click.prevent="deleteSale(sale.SaleMaster_SlNo)"><i class="fa fa-trash"></i></a>
+									<a href="" title="Delete Sale" @click.prevent="deleteSale(sale)"><i class="fa fa-trash"></i></a>
 								<?php } ?>
 							</td>
 						</tr>
@@ -356,7 +356,7 @@
 						})
 						.then(res => {
 							return res.data.found
-						})					
+						})
 					if (checkInstallment) {
 						alert('Unable to edit. Installment payment found!');
 						return
@@ -500,13 +500,26 @@
 						}
 					})
 			},
-			deleteSale(saleId) {
+			async deleteSale(sale) {
+				if (sale.is_installment == 'true') {
+					let checkInstallment = await axios.post('/check_installment_payment', {
+							saleId: sale.SaleMaster_SlNo,
+							customerId: sale.SalseCustomer_IDNo
+						})
+						.then(res => {
+							return res.data.found
+						})
+					if (checkInstallment) {
+						alert('Unable to edit. Installment payment found!');
+						return
+					}
+				}
 				let deleteConf = confirm('Are you sure?');
 				if (deleteConf == false) {
 					return;
 				}
-				axios.post('/delete_sales', {
-						saleId: saleId
+				await axios.post('/delete_sales', {
+						saleId: sale.SaleMaster_SlNo
 					})
 					.then(res => {
 						let r = res.data;
