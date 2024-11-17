@@ -2,9 +2,43 @@
 	.header {
 		border-bottom: 1px double #e86100;
 		width: 100%;
-		height: 60px;
-		margin-top: 0px;
+		/* height: 60px; */
+		margin-top: 20px;
 		margin-bottom: 0;
+		padding-bottom: 10px;
+	}
+
+	.header a {
+		text-decoration: none;
+	}
+
+	.card {
+		box-shadow: 0px 0px 1px 1px #62595954;
+		padding: 6px 10px;
+		padding-left: 2px;
+		background: #4c8fbd;
+		/* background: #63e3ff; */
+		color: white;
+		border-radius: 2px;
+		transition: 0.1ms ease-in-out;
+	}
+
+	.card:hover{
+		transition: 0.1ms ease-in-out;
+		background-color: #6ca5cdd4;
+	}
+
+	.card i {
+		border: 1px solid #fff;
+		padding: 5px;
+		font-weight: 600;
+		border-radius: 12px;
+		font-size: 16px;
+	}
+
+	.card span {
+		font-size: 12px;
+		font-weight: 600;
 	}
 
 	.header h3 {

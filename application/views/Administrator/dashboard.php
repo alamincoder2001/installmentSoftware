@@ -24,9 +24,162 @@ if ($module == 'dashboard' or $module == '') { ?>
 	<div class="row">
 		<div class="col-md-12 col-xs-12">
 			<!-- Header Logo -->
-			<div class="col-md-12 header" style="height: 115px;">
-				<img src="<?php echo base_url(); ?>assets/images/linkup_logo.png" style="border-radius: 8px;" class="img img-responsive center-block">
+			<!-- <div class="col-md-12 header" style="height: 115px;">
+				 <img src="<?php echo base_url(); ?>assets/images/linkup_logo.png" style="border-radius: 8px;" class="img img-responsive center-block">
+			</div> -->
+			<div class="col-md-12 header" style="display: flex;flex-direction: column;justify-content: flex-start;gap: 5px;">
+				<div class="row" style="margin: 0;">
+					<?php if (array_search("sales", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
+						<div class="col-md-2 no-padding-right">
+							<a href="/sales">
+								<div class="card">
+									<div class="card-body">
+										<i class="fa fa-shopping-cart"></i>
+										<span>Sales Entry</span>
+									</div>
+								</div>
+							</a>
+						</div>
+					<?php endif; ?>
+					<?php if (array_search("purchase", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
+						<div class="col-md-2 no-padding-right">
+							<a href="/purchase">
+								<div class="card">
+									<div class="card-body">
+										<i class="fa fa-cart-plus"></i>
+										<span>Purchase Entry</span>
+									</div>
+								</div>
+							</a>
+						</div>
+					<?php endif; ?>
+					<?php if (array_search("customerPaymentPage", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
+						<div class="col-md-2 no-padding-right">
+							<a href="/customerPaymentPage">
+								<div class="card">
+									<div class="card-body">
+										<i class="fa fa-money"></i>
+										<span>Customer Payment</span>
+									</div>
+								</div>
+							</a>
+						</div>
+					<?php endif; ?>
+					<?php if (array_search("customer", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
+						<div class="col-md-2 no-padding-right">
+							<a href="/customer">
+								<div class="card">
+									<div class="card-body">
+										<i class="fa fa-user-plus"></i>
+										<span>Customer Entry</span>
+									</div>
+								</div>
+							</a>
+						</div>
+					<?php endif; ?>
+					<?php if (array_search("installment_payment", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
+						<div class="col-md-2 no-padding-right">
+							<a href="/installment_payment">
+								<div class="card">
+									<div class="card-body">
+										<i class="fa fa-money"></i>
+										<span>Installment Receive</span>
+									</div>
+								</div>
+							</a>
+						</div>
+					<?php endif; ?>
+					<?php if (array_search("profitLoss", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
+						<div class="col-md-2">
+							<a href="/profitLoss">
+								<div class="card">
+									<div class="card-body">
+										<i class="fa fa-medkit"></i>
+										<span>Profit & Loss</span>
+									</div>
+								</div>
+							</a>
+						</div>
+					<?php endif; ?>
+				</div>
+				<!-- end of six card -->
+				<div class="row" style="margin: 0;">
+					<?php if (array_search("salesrecord", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
+						<div class="col-md-2 no-padding-right">
+							<a href="/salesrecord">
+								<div class="card">
+									<div class="card-body">
+										<i class="fa fa-list"></i>
+										<span>Sale Record</span>
+									</div>
+								</div>
+							</a>
+						</div>
+					<?php endif; ?>
+					<?php if (array_search("customerDue", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
+						<div class="col-md-2 no-padding-right">
+							<a href="/customerDue">
+								<div class="card">
+									<div class="card-body">
+										<i class="fa fa-list"></i>
+										<span>Customer DueList</span>
+									</div>
+								</div>
+							</a>
+						</div>
+					<?php endif; ?>
+					<?php if (array_search("day_book", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
+						<div class="col-md-2 no-padding-right">
+							<a href="/day_book">
+								<div class="card">
+									<div class="card-body">
+										<i class="fa fa-book"></i>
+										<span>Day Book</span>
+									</div>
+								</div>
+							</a>
+						</div>
+					<?php endif; ?>
+					<?php if (array_search("customerPaymentReport", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
+						<div class="col-md-2 no-padding-right">
+							<a href="/customerPaymentReport">
+								<div class="card">
+									<div class="card-body">
+										<i class="fa fa-list"></i>
+										<span>Customer Ledger</span>
+									</div>
+								</div>
+							</a>
+						</div>
+					<?php endif; ?>
+					<?php if (array_search("currentStock", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
+						<div class="col-md-2 no-padding-right">
+							<a href="/currentStock">
+								<div class="card">
+									<div class="card-body">
+										<i class="fa fa-list"></i>
+										<span>Stock Report</span>
+									</div>
+								</div>
+							</a>
+						</div>
+					<?php endif; ?>
+					<?php if (array_search("cash_view", $access) > -1 || isset($CheckSuperAdmin) || isset($CheckAdmin)) : ?>
+						<div class="col-md-2">
+							<a href="/cash_view">
+								<div class="card">
+									<div class="card-body">
+										<i class="fa fa-money"></i>
+										<span>Cash View</span>
+									</div>
+								</div>
+							</a>
+						</div>
+					<?php endif; ?>
+				</div>
 			</div>
+			<!-- shortcut end -->
+
 			<div class="col-md-12 mobileView">
 				<div class="col-md-2 col-xs-6 section4">
 					<a href="<?php echo base_url(); ?>module/SalesModule">
