@@ -250,6 +250,15 @@ class Customer extends CI_Controller
             if ($customerCodeCount > 0) {
                 $customerObj->Customer_Code = $this->mt->generateCustomerCode();
             }
+            
+            
+            $duplicateMobileQuery = $this->db->query("select * from tbl_customer where Customer_Mobile = ? and branch_id = ?", [$customerObj->Customer_Mobile, $this->session->userdata("BRANCHid")]);
+            
+            if ($duplicateMobileQuery->num_rows() > 0) { 
+                $res = ['success' => false, 'message' => 'Mobile number already exists!'];
+                echo json_encode($res);
+                exit;
+            }
 
             $customer = (array)$customerObj;
             unset($customer['Customer_SlNo']);
@@ -257,34 +266,17 @@ class Customer extends CI_Controller
 
             $customerId = null;
             $res_message = "";
+            
+            $customer["status"]     = 'a';
+            $customer["AddBy"] = $this->session->userdata("userId");
+            $customer["AddTime"] = date("Y-m-d H:i:s");
+            $customer["last_update_ip"] = get_client_ip();
 
-            $duplicateMobileQuery = $this->db->query("select * from tbl_customer where Customer_Mobile = ? and branch_id = ?", [$customerObj->Customer_Mobile, $this->session->userdata("BRANCHid")]);
+            $this->db->insert('tbl_customer', $customer);
+            $customerId = $this->db->insert_id();
 
-            if ($duplicateMobileQuery->num_rows() > 0) {
-                $duplicateCustomer = $duplicateMobileQuery->row();
-
-                unset($customer['Customer_Code']);
-                $customer["status"]     = 'a';
-                $customer["UpdateBy"]   = $this->session->userdata("userId");
-                $customer["UpdateTime"] = date("Y-m-d H:i:s");
-                $customer["last_update_ip"] = get_client_ip();
-                $this->db->where('Customer_SlNo', $duplicateCustomer->Customer_SlNo)->update('tbl_customer', $customer);
-
-                $customerId = $duplicateCustomer->Customer_SlNo;
-                $customerObj->Customer_Code = $duplicateCustomer->Customer_Code;
-                $res_message = 'Customer updated successfully';
-            } else {
-                $customer["status"]     = 'a';
-                $customer["AddBy"] = $this->session->userdata("userId");
-                $customer["AddTime"] = date("Y-m-d H:i:s");
-                $customer["last_update_ip"] = get_client_ip();
-
-                $this->db->insert('tbl_customer', $customer);
-                $customerId = $this->db->insert_id();
-
-                $res_message = 'Customer added successfully';
-            }
-
+            $res_message = 'Customer added successfully';
+            
             if (!empty($_FILES)) {
                 $imagePath = $this->mt->uploadImage($_FILES, 'image', 'uploads/customers', $customerObj->Customer_Code);
                 $this->db->query("update tbl_customer c set c.image_name = ? where c.Customer_SlNo = ?", [$imagePath, $customerId]);

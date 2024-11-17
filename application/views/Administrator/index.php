@@ -204,7 +204,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 					<ul class="breadcrumb">
 						<li>
 							<i class="ace-icon fa fa-home home-icon"></i>
-							<a href="#">Home</a>
+							<a href="<?php echo base_url(); ?>module/dashboard">Home</a>
 						</li>
 
 						<li>
