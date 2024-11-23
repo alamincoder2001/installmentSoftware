@@ -294,7 +294,7 @@ if ($module == 'dashboard' or $module == '') { ?>
 					<table class="table table-bordered table-hover table-responsive todayPayment">
 						<thead>
 							<tr style="background: #767676;">
-								<th>Date</th>
+								<th>Sl</th>
 								<th>Month</th>
 								<th>Customer</th>
 								<th>Installment</th>
@@ -304,14 +304,14 @@ if ($module == 'dashboard' or $module == '') { ?>
 						<tbody></tbody>
 					</table>
 				</div>
-				<div class="col-md-4 col-xs-12">
+				<div class="col-md-4 col-xs-12 no-padding">
 					<div style="background: #4C8FBD;padding: 7px 5px;border-top-left-radius: 3px;border-top-right-radius:3px;color: white;">
 						<h4 style="margin:0;">Past Customer Payment</h4>
 					</div>
 					<table class="table table-bordered table-hover table-responsive pastPayment">
 						<thead>
 							<tr style="background: #767676;">
-								<th>Date</th>
+								<th>Sl</th>
 								<th>Month</th>
 								<th>Customer</th>
 								<th>Installment</th>

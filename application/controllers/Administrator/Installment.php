@@ -59,6 +59,7 @@ class Installment extends CI_Controller
     {
         $data = json_decode($this->input->raw_input_stream);
         $clauses = "";
+        $groupBy = "";
         $limit = "";
 
         if (isset($data->customerId) && $data->customerId != '') {
@@ -77,18 +78,22 @@ class Installment extends CI_Controller
         }
         if (isset($data->today) && $data->today != '') {
             $clauses .= " and ins.due_date = '$data->today'";
-            $limit = "limit 20";
+            $limit = "limit 15";
         }
 
         if (isset($data->pastday) && $data->pastday != '') {
             $clauses .= " and ins.due_date < '$data->pastday'";
-            $limit = "limit 20";
+            $limit = "limit 15";
+        }
+
+        if (isset($data->groupBy) && $data->groupBy != '') {
+            $groupBy .= " group by c.Customer_Name";
         }
 
 
         if (isset($data->upcomingday) && $data->upcomingday != '') {
             $clauses .= " and ins.due_date between CURRENT_DATE + INTERVAL 1 DAY and CURRENT_DATE + INTERVAL 8 DAY";
-            $limit = "limit 20";
+            $limit = "limit 15";
         }
 
         if ((isset($data->dateFrom) && $data->dateFrom != '') && (isset($data->dateFrom) && $data->dateFrom != '')) {
@@ -106,8 +111,28 @@ class Installment extends CI_Controller
                 left join tbl_salesmaster sm on sm.SaleMaster_SlNo = ins.sale_id
                 where ins.branch_id = '$this->sbrunch'
                 $clauses
+                $groupBy                
                 order by ins.id asc
                 $limit")->result();
+
+        if (isset($data->groupBy) && $data->groupBy != '') {
+            foreach ($installments as $key => $item) {
+                $item->months = $this->db
+                    ->query("select 
+                    ins.*,
+                    c.Customer_Code,
+                    c.Customer_Name,
+                    concat(DATE_FORMAT(ins.due_date, '%M-%Y')) as display_name,
+                    sm.SaleMaster_InvoiceNo
+                    from tbl_installment ins
+                    left join tbl_customer c on c.Customer_SlNo = ins.customer_id
+                    left join tbl_salesmaster sm on sm.SaleMaster_SlNo = ins.sale_id
+                    where ins.branch_id = '$this->sbrunch'
+                    and ins.customer_id = ?
+                    $clauses               
+                    order by ins.id asc", $item->customer_id)->result();
+            }
+        }
 
         echo json_encode($installments);
     }
@@ -247,5 +272,18 @@ class Installment extends CI_Controller
         $this->db->where('id', $data->paymentId)->update('tbl_installment', $installment);
         $res = ['success' => true, 'message' => 'Installment delete successfully'];
         echo json_encode($res);
+    }
+
+    public function customerWiseInstallment($customerId, $type = null)
+    {
+        $access = $this->mt->userAccess();
+        if (!$access) {
+            redirect(base_url());
+        }
+        $data['title']      = 'Customer Installment List';
+        $data['type']       = $type;
+        $data['customerId'] = $customerId;
+        $data['content']    = $this->load->view('Administrator/installment/customer_wise_installment', $data, TRUE);
+        $this->load->view('Administrator/index', $data);
     }
 }

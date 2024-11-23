@@ -252,28 +252,6 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 		<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
 			<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
 		</a>
-
-		<div id="updateInstallmentPayment" class="modal fade" tabindex="-1" role="dialog">
-			<form onsubmit="updateInstallmentPayment(event)">
-				<div class="modal-dialog modal-sm modal-dialog-centered">
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
-							<h4 class="modal-title">Update Installment (<span class="customerName"></span>)</h4>
-						</div>
-						<div class="modal-body">
-							<input type="hidden" name="id" class="form-control" id="id" />
-							<input type="hidden" name="type" class="form-control" id="type" />
-							<input type="date" name="due_date" class="form-control" id="due_date" />
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-							<button type="submit" class="btn btn-primary">Update</button>
-						</div>
-					</div>
-				</div>
-			</form>
-		</div>
 	</div>
 
 	<!-- basic scripts -->
@@ -350,7 +328,8 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 				dataType: 'JSON',
 				contentType: 'application/json',
 				data: JSON.stringify({
-					today: today
+					today: today,
+					groupBy: 'yes'
 				}),
 				beforeSend: () => {
 					$(".todayPayment").find('tbody').html("");
@@ -358,14 +337,18 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 				success: res => {
 					if (res.length > 0) {
 						$.each(res, (index, item) => {
+							let months = '';
+							$.each(item.months, (sl, val) => {
+								months += `<span>${moment(val.due_date).format('MMM-YYYY')}${item.months.length - 1 == sl ? '' : ', '}</span>`;
+							});
 							let tr = `
 							<tr>
-								<td style="font-size:11px;padding:4px;">${moment(item.due_date).format('DD-MM-YYYY')}</td>
-								<td style="font-size:11px;padding:4px;">${moment(item.due_date).format('MMMM-YYYY')}</td>
+								<td style="font-size:11px;padding:4px;">${index + 1}</td>
+								<td style="font-size:11px;padding:4px;">${months}</td>
 								<td style="font-size:11px;padding:4px;">${item.Customer_Name}</td>
-								<td style="font-size:11px;padding:4px;">${item.payment_amount}</td>
+								<td style="font-size:11px;padding:4px;">${item.months.reduce((pre, cur) => {return pre + parseFloat(cur.payment_amount)},0).toFixed(2)}</td>
 								<td style="font-size:11px;padding:4px;">
-									<i onclick="updateInstallment('today', '${item.id}', '${item.due_date}', '${item.Customer_Name}')" class="fa fa-edit" style="font-size:13px;cursor:pointer;"></i>
+									<i onclick="updateInstallment('today', '${item.customer_id}')" class="fa fa-eye" style="font-size:13px;cursor:pointer;"></i>
 								</td>
 							</tr>
 						`;
@@ -386,7 +369,8 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 				dataType: 'JSON',
 				contentType: 'application/json',
 				data: JSON.stringify({
-					pastday: today
+					pastday: today,
+					groupBy: 'yes'
 				}),
 				beforeSend: () => {
 					$(".pastPayment").find('tbody').html("");
@@ -394,17 +378,20 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 				success: res => {
 					if (res.length > 0) {
 						$.each(res, (index, item) => {
+							let months = '';
+							$.each(item.months, (sl, val) => {
+								months += `<span>${moment(val.due_date).format('MMM-YYYY')}${item.months.length - 1 == sl ? '' : ', '}</span>`;
+							});
 							let tr = `
 								<tr>
-									<td style="font-size:11px;padding:4px;">${moment(item.due_date).format('DD-MM-YYYY')}</td>
-									<td style="font-size:11px;padding:4px;">${moment(item.due_date).format('MMMM-YYYY')}</td>
+									<td style="font-size:11px;padding:4px;">${index + 1}</td>
+									<td style="font-size:11px;padding:4px;">${months}</td>
 									<td style="font-size:11px;padding:4px;">${item.Customer_Name}</td>
-									<td style="font-size:11px;padding:4px;">${item.payment_amount}</td>
+									<td style="font-size:11px;padding:4px;">${item.months.reduce((pre, cur) => {return pre + parseFloat(cur.payment_amount)},0).toFixed(2)}</td>
 									<td style="font-size:11px;padding:4px;">
-										<i onclick="updateInstallment('past', '${item.id}', '${item.due_date}', '${item.Customer_Name}')" class="fa fa-edit" style="font-size:13px;cursor:pointer;"></i>
+										<i onclick="updateInstallment('past', '${item.customer_id}')" class="fa fa-eye" style="font-size:13px;cursor:pointer;"></i>
 									</td>
-								</tr>
-							`;
+								</tr>`;
 							$(".pastPayment").find('tbody').append(tr);
 						})
 					} else {
@@ -450,35 +437,8 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
 		getUpcomingPayment();
 
 		//update installment
-		function updateInstallment(type, id, due_date, customer) {
-			$('#updateInstallmentPayment').modal('show');
-			$('#updateInstallmentPayment').find('#id').val(id);
-			$('#updateInstallmentPayment').find('#type').val(type);
-			$('#updateInstallmentPayment').find('#due_date').val(due_date);
-			$('#updateInstallmentPayment').find('.customerName').text(customer);
-		}
-
-		function updateInstallmentPayment(event) {
-			event.preventDefault();
-			let type = $('#updateInstallmentPayment').find('#type').val();
-			let formdata = new FormData(event.target);
-			$.ajax({
-				url: '/update_installment',
-				method: 'POST',
-				dataType: 'JSON',
-				contentType: false,
-				processData: false,
-				data: formdata,
-				success: res => {
-					if (type == 'today') {
-						getTodayPayment();
-					} else {
-						getPastPayment();
-					}
-					$('#updateInstallmentPayment').modal('hide');
-					alert(res.message);
-				}
-			});
+		function updateInstallment(type, customerId = null) {
+			window.open(`/installment_customer_list/${customerId}/${type}`, '_blank');
 		}
 	</script>
 </body>
