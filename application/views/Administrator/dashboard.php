@@ -273,13 +273,13 @@ if ($module == 'dashboard' or $module == '') { ?>
 
 
 				<div class="col-md-2 col-xs-6 section4">
-					<a href="<?php echo base_url(); ?>customerPaymentReport">
+					<a href="<?php echo base_url(); ?>sms">
 						<div class="col-md-12 section122" style="background-color:#ffe3d7;" onmouseover="this.style.background = '#ffc0a6'" onmouseout="this.style.background = '#ffe3d7'">
 							<div class="logo">
-								<i class="fa fa-list"></i>
+								<i class="fa fa-comment"></i>
 							</div>
 							<div class="textModule">
-								Customer Ledger
+								Send SMS
 							</div>
 						</div>
 					</a>
