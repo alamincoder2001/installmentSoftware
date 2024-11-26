@@ -20,8 +20,14 @@
                                 <input type="radio" id="employee" value="employee" @change="onChangeSearchType" v-model="searchType"> By Employee
                             </label>
                         </div>
-                        <div class="form-group" style="margin-top: 50px;">
-                            <button type="submit" class="btn btn-primary btn-xs pull-right"> Submit </button>
+                        <div class="form-group">
+                            <label for="reminder" style="display: flex; align-items:center;gap:5px;">
+                                <input type="radio" id="reminder" value="reminder" @change="onChangeSearchType" v-model="searchType"> Reminder
+                                <input type="date" class="form-control" v-model="date" style="width: 150px;display:none;" :style="{display:searchType == 'reminder' ? '' : 'none'}">
+                            </label>
+                        </div>
+                        <div class="form-group" style="margin-top: 23px;">
+                            <button type="submit" class="btn btn-primary btn-xs pull-right" style="padding-left: 15px;padding-right:15px;"> Show </button>
                         </div>
                     </form>
                 </div>
@@ -49,7 +55,7 @@
     <div class="row" style="margin-top: 25px;">
         <div class="col-md-12">
             <div class="table-responsive">
-                <table class="table table-bordered" style="display: none;" v-if="searchType =='customer' && customers.length > 0" :style="{display: searchType =='customer' && customers.length > 0 ? '' : 'none'}">
+                <table class="table table-bordered" style="display: none;" v-if="(searchType =='customer' || searchType == 'reminder') && customers.length > 0" :style="{display: (searchType =='customer' || searchType == 'reminder') && customers.length > 0 ? '' : 'none'}">
                     <thead>
                         <tr>
                             <th>Select All &nbsp; <input type="checkbox" v-on:click="selectAll"></th>
@@ -116,6 +122,7 @@
 
 <script src="<?php echo base_url(); ?>assets/js/vue/vue.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/vue/axios.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/moment.min.js"></script>
 
 <script>
     new Vue({
@@ -123,6 +130,7 @@
         data() {
             return {
                 searchType: 'customer',
+                date: moment().format('YYYY-MM-DD'),
                 customers: [],
                 selectedCustomers: [],
                 suppliers: [],
@@ -137,7 +145,11 @@
         },
         methods: {
             getCustomers() {
-                axios.get('/get_customers').then(res => {
+                let filter = {};
+                if (this.searchType == 'reminder') {
+                    filter.date = this.date;
+                }
+                axios.post('/get_customers', filter).then(res => {
                     this.customers = res.data.map(customer => {
                         customer.Customer_Mobile = customer.Customer_Mobile.trim();
                         return customer;
@@ -166,7 +178,7 @@
                 this.employees = [];
             },
             getData() {
-                if (this.searchType == 'customer') {
+                if (this.searchType == 'customer' || this.searchType == 'reminder') {
                     this.getCustomers();
                 } else if (this.searchType == 'supplier') {
                     this.getSuppliers();
@@ -192,7 +204,7 @@
                 }
             },
             sendSms() {
-                if (this.searchType == 'customer' && this.selectedCustomers.length == 0) {
+                if ((this.searchType == 'customer' || this.searchType == 'reminder') && this.selectedCustomers.length == 0) {
                     alert('Select customer');
                     return;
                 }
@@ -209,7 +221,7 @@
                 let data = {
                     smsText: this.smsText,
                 }
-                if (this.searchType == 'customer') {
+                if (this.searchType == 'customer' || this.searchType == 'reminder') {
                     data.numbers = this.selectedCustomers;
                 }
                 if (this.searchType == 'supplier') {

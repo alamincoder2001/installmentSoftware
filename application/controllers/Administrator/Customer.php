@@ -78,7 +78,16 @@ class Customer extends CI_Controller
             order by c.Customer_SlNo desc
             $limit
         ", $this->session->userdata('BRANCHid'))->result();
-        echo json_encode($customers);
+
+        if (isset($data->date) && $data->date != '') {
+            foreach ($customers as $key => $item) {
+                $check = $this->db->where('due_date', $data->date)->where('status', 'p')->where('customer_id', $item->Customer_SlNo)->get('tbl_installment')->row();
+                if (empty($check)) {
+                    unset($customers[$key]);
+                }
+            }
+        }
+        echo json_encode(array_values($customers));
     }
 
     public function getCustomerDue()
@@ -250,11 +259,11 @@ class Customer extends CI_Controller
             if ($customerCodeCount > 0) {
                 $customerObj->Customer_Code = $this->mt->generateCustomerCode();
             }
-            
-            
+
+
             $duplicateMobileQuery = $this->db->query("select * from tbl_customer where Customer_Mobile = ? and branch_id = ?", [$customerObj->Customer_Mobile, $this->session->userdata("BRANCHid")]);
-            
-            if ($duplicateMobileQuery->num_rows() > 0) { 
+
+            if ($duplicateMobileQuery->num_rows() > 0) {
                 $res = ['success' => false, 'message' => 'Mobile number already exists!'];
                 echo json_encode($res);
                 exit;
@@ -266,7 +275,7 @@ class Customer extends CI_Controller
 
             $customerId = null;
             $res_message = "";
-            
+
             $customer["status"]     = 'a';
             $customer["AddBy"] = $this->session->userdata("userId");
             $customer["AddTime"] = date("Y-m-d H:i:s");
@@ -276,7 +285,7 @@ class Customer extends CI_Controller
             $customerId = $this->db->insert_id();
 
             $res_message = 'Customer added successfully';
-            
+
             if (!empty($_FILES)) {
                 $imagePath = $this->mt->uploadImage($_FILES, 'image', 'uploads/customers', $customerObj->Customer_Code);
                 $this->db->query("update tbl_customer c set c.image_name = ? where c.Customer_SlNo = ?", [$imagePath, $customerId]);
