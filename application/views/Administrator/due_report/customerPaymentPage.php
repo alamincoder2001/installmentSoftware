@@ -375,13 +375,13 @@
 					});
 					return;
 				}
-				if (parseFloat(this.payment.CPayment_previous_due - this.payment.CPayment_installment_due) < parseFloat(this.payment.CPayment_amount)) {
-					Swal.fire({
-						icon: "error",
-						text: "Due amount zero",
-					});
-					return;
-				}
+				// if (parseFloat(this.payment.CPayment_previous_due - this.payment.CPayment_installment_due) < parseFloat(this.payment.CPayment_amount)) {
+				// 	Swal.fire({
+				// 		icon: "error",
+				// 		text: "Due amount zero",
+				// 	});
+				// 	return;
+				// }
 
 				this.payment.CPayment_customerID = this.selectedCustomer.Customer_SlNo;
 
