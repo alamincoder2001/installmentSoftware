@@ -211,12 +211,13 @@
 				<datatable :columns="columns" :data="customers" :filter-by="filter" style="margin-bottom: 5px;">
 					<template scope="{ row }">
 						<tr>
-							<td>{{ row.AddTime | dateOnly('DD-MM-YYYY') }}</td>
+							<td>{{ row.sl }}</td>
 							<td>{{ row.Customer_Code }}</td>
 							<td>{{ row.Customer_Name }}</td>
-							<td>{{ row.owner_name }}</td>
-							<td>{{ row.District_Name }}</td>
 							<td>{{ row.Customer_Mobile }}</td>
+							<td>{{ row.owner_name }}</td>
+							<td>{{ row.Customer_OfficePhone }}</td>
+							<td>{{ row.District_Name }}</td>
 							<td>{{ row.Customer_Type }}</td>
 							<td>{{ row.Customer_Credit_Limit }}</td>
 							<td>
@@ -294,8 +295,8 @@
 				selectedFile: null,
 
 				columns: [{
-						label: 'Added Date',
-						field: 'AddTime',
+						label: 'Sl',
+						field: 'sl',
 						align: 'center',
 						filterable: false
 					},
@@ -311,8 +312,18 @@
 						align: 'center'
 					},
 					{
+						label: 'Contact Number',
+						field: 'Customer_Mobile',
+						align: 'center'
+					},
+					{
 						label: 'Reference Name',
 						field: 'owner_name',
+						align: 'center'
+					},
+					{
+						label: 'Reference Phone',
+						field: 'Customer_OfficePhone',
 						align: 'center'
 					},
 					{
@@ -320,11 +331,7 @@
 						field: 'District_Name',
 						align: 'center'
 					},
-					{
-						label: 'Contact Number',
-						field: 'Customer_Mobile',
-						align: 'center'
-					},
+					
 					{
 						label: 'Customer Type',
 						field: 'Customer_Type',
@@ -368,7 +375,10 @@
 			},
 			getCustomers() {
 				axios.get('/get_customers').then(res => {
-					this.customers = res.data;
+					this.customers = res.data.map((item, index) => {
+						item.sl = index + 1;
+						return item;
+					});
 				})
 			},
 			saveCustomer() {
