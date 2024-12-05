@@ -219,13 +219,13 @@ if ($module == 'dashboard' or $module == '') { ?>
 
 				<!-- module/HRPayroll -->
 				<div class="col-md-2 col-xs-6 section4">
-					<a href="<?php echo base_url(); ?>customer">
+					<a href="<?php echo base_url(); ?>BalanceSheet">
 						<div class="col-md-12 section122" style="background-color:#ecffd9;" onmouseover="this.style.background = '#cfff9f'" onmouseout="this.style.background = '#ecffd9'">
 							<div class="logo">
-								<i class="fa fa-user-plus"></i>
+								<i class="fa fa-th-list"></i>
 							</div>
 							<div class="textModule">
-								Customer Entry
+								Balance In Out
 							</div>
 						</div>
 					</a>

@@ -5,7 +5,6 @@
         background: #fff;
         margin-left: 5px;
         border-radius: 4px !important;
-        margin-top: -2px;
     }
 
     .v-select .dropdown-toggle {
@@ -46,18 +45,23 @@
             <fieldset class="scheduler-border scheduler-search">
                 <legend class="scheduler-border">Product Price List</legend>
                 <div class="control-group">
-                    <form class="form-inline" @submit.prevent="getProducts">
+                    <form class="form-inline" @submit.prevent="getResults">
                         <div class="form-group">
                             <label>Search Type</label>
                             <select class="form-select" style="height: 26px;padding:0 6px;width:150px;" v-model="searchType">
                                 <option value="">All</option>
                                 <option value="category">By Category</option>
+                                <option value="product">By Product</option>
                             </select>
                         </div>
 
                         <div class="form-group" style="display:none;" v-bind:style="{display: searchType == 'category' ? '' : 'none'}">
                             <label>Category</label>
                             <v-select v-bind:options="categories" v-model="selectedCategory" label="ProductCategory_Name"></v-select>
+                        </div>
+                        <div class="form-group" style="display:none;" v-bind:style="{display: searchType == 'product' ? '' : 'none'}">
+                            <label>Product</label>
+                            <v-select v-bind:options="products" v-model="selectedProduct" label="display_text"></v-select>
                         </div>
 
                         <div class="form-group" style="margin-top: -1px;">
@@ -69,7 +73,7 @@
         </div>
     </div>
 
-    <div class="row" style="display:none;" v-bind:style="{display: products.length > 0 ? '' : 'none'}">
+    <div class="row" style="display:none;" v-bind:style="{display: reports.length > 0 ? '' : 'none'}">
         <div class="col-md-12 text-right">
             <a href="" @click.prevent="print"><i class="fa fa-print"></i> Print</a>
         </div>
@@ -87,7 +91,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(product, sl) in products">
+                        <tr v-for="(product, sl) in reports">
                             <td>{{ sl + 1 }}</td>
                             <td>{{ product.Product_Code }}</td>
                             <td>{{ product.Product_Name }}</td>
@@ -114,6 +118,7 @@
         data() {
             return {
                 searchType: '',
+                reports: [],
                 products: [],
                 selectedProduct: null,
                 categories: [],
@@ -122,24 +127,29 @@
         },
         created() {
             this.getCategories();
+            this.getProducts();
         },
         methods: {
+            getProducts() {
+                axios.post('/get_products', {
+                    isService: 'false'
+                }).then(res => {
+                    this.products = res.data;
+                })
+            },
             getCategories() {
                 axios.get('/get_categories').then(res => {
                     this.categories = res.data;
                 })
             },
-            getProducts() {
-                let categoryId = '';
-                if (this.searchType == 'category' && this.selectedCategory != null) {
-                    categoryId = this.selectedCategory.ProductCategory_SlNo;
-                }
-
+            getResults() {
                 let data = {
-                    categoryId: categoryId
+                    categoryId: this.selectedCategory ? this.selectedCategory.ProductCategory_SlNo : '',
+                    productId: this.selectedProduct ? this.selectedProduct.Product_SlNo : '',
+                    isService: 'false'
                 }
                 axios.post('/get_products', data).then(res => {
-                    this.products = res.data;
+                    this.reports = res.data;
                 })
             },
             async print() {

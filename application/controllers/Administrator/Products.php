@@ -133,6 +133,9 @@ class Products extends CI_Controller
             $status = $data->status;
         }
 
+        if (isset($data->productId) && $data->productId != '') {
+            $clauses .= " and p.Product_SlNo = '$data->productId'";
+        }
         if (isset($data->categoryId) && $data->categoryId != '') {
             $clauses .= " and p.ProductCategory_ID = '$data->categoryId'";
         }
