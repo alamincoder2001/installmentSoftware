@@ -1170,9 +1170,16 @@ class Sales extends CI_Controller
     {
         $data = json_decode($this->input->raw_input_stream);
 
+        $detailClauses = "";
         $customerClause = "";
         if ($data->customer != null && $data->customer != '') {
             $customerClause = " and sm.SalseCustomer_IDNo = '$data->customer'";
+        }
+        if ($data->productId != null && $data->productId != '') {
+            $detailClauses .= " and sd.Product_IDNo = '$data->productId'";
+        }
+        if ($data->categoryId != null && $data->categoryId != '') {
+            $detailClauses .= " and p.ProductCategory_ID = '$data->categoryId'";
         }
 
         $dateClause = "";
@@ -1205,10 +1212,15 @@ class Sales extends CI_Controller
                 from tbl_saledetails sd 
                 join tbl_product p on p.Product_SlNo = sd.Product_IDNo
                 where sd.SaleMaster_IDNo = ?
+                $detailClauses
             ", $sale->SaleMaster_SlNo)->result();
         }
 
-        echo json_encode($sales);
+        $sales = array_filter($sales, function ($item) {
+            return count($item->saleDetails) > 0;
+        }, 0);
+
+        echo json_encode(array_values($sales));
     }
 
     public function chalan($saleId)

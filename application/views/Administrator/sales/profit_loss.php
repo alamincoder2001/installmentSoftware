@@ -62,8 +62,25 @@
 				<div class="col-md-12">
 					<form class="form-inline" v-on:submit.prevent="getProfitLoss">
 						<div class="form-group">
+							<label for="">SearchType</label>
+							<select class="form-select" style="padding: 0;" @change="onChangeSearchType" v-model="filter.searchType">
+								<option value="">All</option>
+								<option value="customer">By Customer</option>
+								<option value="product">By Product</option>
+								<option value="category">By Category</option>
+							</select>
+						</div>
+						<div class="form-group" style="display: none;" :style="{display: filter.searchType == 'customer' ? '' : 'none'}">
 							<label>Customer &nbsp;</label>
 							<v-select v-bind:options="customers" v-model="selectedCustomer" label="display_name" placeholder="Select Customer"></v-select>
+						</div>
+						<div class="form-group" style="display: none;" :style="{display: filter.searchType == 'category' ? '' : 'none'}">
+							<label>Category &nbsp;</label>
+							<v-select v-bind:options="categories" v-model="selectedCategory" label="ProductCategory_Name" placeholder="Select Category"></v-select>
+						</div>
+						<div class="form-group" style="display: none;" :style="{display: filter.searchType == 'product' ? '' : 'none'}">
+							<label>Product &nbsp;</label>
+							<v-select v-bind:options="products" v-model="selectedProduct" label="display_text" placeholder="Select Product"></v-select>
 						</div>
 
 						<div class="form-group">
@@ -156,67 +173,67 @@
 							</td>
 						</tr>
 
-						<tr>
+						<tr v-if="filter.searchType == ''">
 							<td colspan="4" style="text-align:right;">Other Income (+)</td>
 							<td colspan="2"></td>
 							<td style="text-align:right;">{{ otherIncome | decimal }}</td>
 						</tr>
 
-						<tr>
+						<tr v-if="filter.searchType == ''">
 							<td colspan="4" style="text-align:right;">VAT (+)</td>
 							<td colspan="2"></td>
 							<td style="text-align:right;">{{ totalVat = reportData.reduce((prev, cur) => { return prev + parseFloat(cur.SaleMaster_TaxAmount) }, 0).toFixed(2) }}</td>
 						</tr>
 
-						<tr>
+						<tr v-if="filter.searchType == ''">
 							<td colspan="4" style="text-align:right;">Total Discount (-)</td>
 							<td colspan="2"></td>
 							<td style="text-align:right;">{{ totalDiscount = reportData.reduce((prev, cur) => { return prev + parseFloat(cur.SaleMaster_TotalDiscountAmount) }, 0).toFixed(2) }}</td>
 						</tr>
 
-						<tr>
+						<tr v-if="filter.searchType == ''">
 							<td colspan="4" style="text-align:right;">Total Returned Value (-)</td>
 							<td colspan="2"></td>
 							<td style="text-align:right;">{{ otherIncomeExpense.returned_amount | decimal }}</td>
 						</tr>
 
-						<tr>
+						<tr v-if="filter.searchType == ''">
 							<td colspan="4" style="text-align:right;">Total Damaged (-)</td>
 							<td colspan="2"></td>
 							<td style="text-align:right;">{{ otherIncomeExpense.damaged_amount | decimal }}</td>
 						</tr>
 
-						<tr>
+						<tr v-if="filter.searchType == ''">
 							<td colspan="4" style="text-align:right;">Cash Transaction (-)</td>
 							<td colspan="2"></td>
 							<td style="text-align:right;">{{ otherIncomeExpense.expense | decimal }}</td>
 						</tr>
 
-						<tr>
+						<tr v-if="filter.searchType == ''">
 							<td colspan="4" style="text-align:right;">Employee Payment (-)</td>
 							<td colspan="2"></td>
 							<td style="text-align:right;">{{ otherIncomeExpense.employee_payment | decimal }}</td>
 						</tr>
 
-						<tr>
+						<tr v-if="filter.searchType == ''">
 							<td colspan="4" style="text-align:right;">Profit Distribute (-)</td>
 							<td colspan="2"></td>
 							<td style="text-align:right;">{{ otherIncomeExpense.profit_distribute | decimal }}</td>
 						</tr>
 
-						<tr>
+						<tr v-if="filter.searchType == ''">
 							<td colspan="4" style="text-align:right;">Loan Interest (-)</td>
 							<td colspan="2"></td>
 							<td style="text-align:right;">{{ otherIncomeExpense.loan_interest | decimal }}</td>
 						</tr>
 
-						<tr>
+						<tr v-if="filter.searchType == ''">
 							<td colspan="4" style="text-align:right;">Assets Sales | Profit/Loss (-)</td>
 							<td colspan="2"></td>
 							<td style="text-align:right;">{{ otherIncomeExpense.assets_sales_profit_loss | decimal }}</td>
 						</tr>
 
-						<tr>
+						<tr v-if="filter.searchType == ''">
 							<td colspan="4" style="text-align:right;">Profit</td>
 							<td colspan="2"></td>
 							<td style="text-align:right;">
@@ -243,12 +260,19 @@
 		data() {
 			return {
 				filter: {
+					searchType: '',
 					customer: null,
+					productId: null,
+					categoryId: null,
 					dateFrom: moment().format('YYYY-MM-DD'),
 					dateTo: moment().format('YYYY-MM-DD')
 				},
 				customers: [],
 				selectedCustomer: null,
+				products: [],
+				selectedProduct: null,
+				categories: [],
+				selectedCategory: null,
 				reportData: [],
 				otherIncomeExpense: {
 					income: 0,
@@ -272,6 +296,8 @@
 			}
 		},
 		created() {
+			this.getProducts();
+			this.getCategory();
 			this.getCustomers();
 		},
 		computed: {
@@ -299,6 +325,23 @@
 					this.customers = res.data;
 				})
 			},
+			getProducts() {
+				axios.post('/get_products', {isService: 'false'}).then(res => {
+					this.products = res.data;
+				})
+			},
+			getCategory() {
+				axios.get('/get_categories').then(res => {
+					this.categories = res.data;
+				})
+			},
+
+			onChangeSearchType(){
+				this.reportData
+				this.selectedCustomer = null;
+				this.selectedProduct = null;
+				this.selectedCategory = null;
+			},
 
 			async getProfitLoss() {
 				if (this.selectedCustomer != null) {
@@ -306,6 +349,8 @@
 				} else {
 					this.filter.customer = null;
 				}
+				this.filter.productId = this.selectedProduct ? this.selectedProduct.Product_SlNo : '';
+				this.filter.categoryId = this.selectedCategory ? this.selectedCategory.ProductCategory_SlNo : '';
 				this.reportData = await axios.post('/get_profit_loss', this.filter).then(res => {
 					return res.data;
 				})
