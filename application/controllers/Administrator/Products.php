@@ -32,14 +32,14 @@ class Products extends CI_Controller
         try {
             $productObj = json_decode($this->input->raw_input_stream);
 
-            $productNameCount = $this->db->query("select * from tbl_product where Product_Name = ?", $productObj->Product_Name)->num_rows();
+            $productNameCount = $this->db->query("select * from tbl_product where Product_Name = ? and branch_id = ?", [$productObj->Product_Name, $this->brunch])->num_rows();
             if ($productNameCount > 0) {
                 $res = ['success' => false, 'message' => 'Product name already exists'];
                 echo json_encode($res);
                 exit;
             }
 
-            $productCodeCount = $this->db->query("select * from tbl_product where Product_Code = ?", $productObj->Product_Code)->num_rows();
+            $productCodeCount = $this->db->query("select * from tbl_product where Product_Code = ? and branch_id = ?", [$productObj->Product_Code, $this->brunch])->num_rows();
             if ($productCodeCount > 0) {
                 $res = ['success' => false, 'message' => 'Product code already exists'];
                 echo json_encode($res);
@@ -70,14 +70,14 @@ class Products extends CI_Controller
         try {
             $productObj = json_decode($this->input->raw_input_stream);
 
-            $productNameCount = $this->db->query("select * from tbl_product where Product_Name = ? and Product_SlNo != ?", [$productObj->Product_Name, $productObj->Product_SlNo])->num_rows();
+            $productNameCount = $this->db->query("select * from tbl_product where Product_Name = ? and Product_SlNo != ? and branch_id = ?", [$productObj->Product_Name, $productObj->Product_SlNo, $this->brunch])->num_rows();
             if ($productNameCount > 0) {
                 $res = ['success' => false, 'message' => 'Product name already exists'];
                 echo json_encode($res);
                 exit;
             }
 
-            $productCodeCount = $this->db->query("select * from tbl_product where Product_Code = ? and Product_SlNo != ?", [$productObj->Product_Code, $productObj->Product_SlNo])->num_rows();
+            $productCodeCount = $this->db->query("select * from tbl_product where Product_Code = ? and Product_SlNo != ? and branch_id = ?", [$productObj->Product_Code, $productObj->Product_SlNo, $this->brunch])->num_rows();
             if ($productCodeCount > 0) {
                 $res = ['success' => false, 'message' => 'Product code already exists'];
                 echo json_encode($res);
@@ -168,6 +168,7 @@ class Products extends CI_Controller
             left join tbl_user ua on ua.User_SlNo = p.AddBy
             left join tbl_user ud on ud.User_SlNo = p.DeletedBy
             where p.status = '$status'
+            and p.branch_id = '$this->brunch'
             $clauses
             order by p.Product_SlNo desc
             $limit
