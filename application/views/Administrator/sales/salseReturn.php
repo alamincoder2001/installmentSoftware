@@ -47,7 +47,7 @@
 		<div class="control-group">
 			<div class="col-md-12">
 				<form class="form-inline">
-					<div class="form-group" style="display:none;" v-bind:style="{display: customers.length > 0 ? '' : 'none'}">
+					<div class="form-group">
 						<label>Customer</label>
 						<v-select v-bind:options="customers" label="display_name" v-model="selectedCustomer" v-on:input="getInvoices" @search="onSearchCustomer" v-bind:disabled="salesReturn.returnId == 0 ? false : true"></v-select>
 					</div>
@@ -155,7 +155,8 @@
 					total: 0.00,
 					note: ''
 				},
-				userType: '<?php echo $this->session->userdata("accountType"); ?>'
+				userType: '<?php echo $this->session->userdata("accountType"); ?>',
+				branchId: "<?= $this->session->userdata("BRANCHid");?>"
 			}
 		},
 		created() {
@@ -187,7 +188,7 @@
 						})
 						.then(res => {
 							let r = res.data;
-							this.customers = r.filter(item => item.status == 'a')
+							this.customers = r.filter(item => item.status == 'a' && item.branch_id == this.branchId)
 							loading(false)
 						})
 				} else {

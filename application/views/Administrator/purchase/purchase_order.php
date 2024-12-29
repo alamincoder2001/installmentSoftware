@@ -468,7 +468,7 @@
 						})
 						.then(res => {
 							let r = res.data;
-							this.suppliers = r.filter(item => item.status == 'a')
+							this.suppliers = r.filter(item => item.status == 'a' && item.branch_id == this.selectedBranch.branch_id)
 							loading(false)
 						})
 				} else {
@@ -524,7 +524,7 @@
 						})
 						.then(res => {
 							let r = res.data;
-							this.products = r.filter(item => item.status == 'a' && item.is_service == 'false');
+							this.products = r.filter(item => item.status == 'a' && item.is_service == 'false' && item.branch_id == this.selectedBranch.branch_id);
 							loading(false)
 						})
 				} else {

@@ -108,15 +108,13 @@
 							<td style="text-align: right;">{{ product.Product_Purchase_Rate | decimal }}</td>
 							<td style="text-align: right;">{{ product.stock_value | decimal }}</td>
 						</tr>
-					</tbody>
-					<tfoot>
 						<tr>
 							<th colspan="4" style="text-align:right;">Total</th>
 							<th>{{ stock.reduce((prev, curr) => {return prev + parseFloat(curr.current_quantity)}, 0) | decimal }}</th>
 							<th></th>
 							<th style="text-align: right;">{{ totalStockValue | decimal }}</th>
 						</tr>
-					</tfoot>
+					</tbody>
 				</table>
 
 				<table class="table table-bordered table-hover" v-if="searchType != 'current' && searchType != null" style="display:none;" v-bind:style="{display: searchType != 'current' && searchType != null ? '' : 'none'}">
@@ -128,7 +126,7 @@
 							<th style="width: 20%;">Category</th>
 							<th colspan="3">Purchase</th>
 							<th colspan="2">Sale</th>
-							<th colspan="2">Transfer</th>
+							<!-- <th colspan="2">Transfer</th> -->
 							<th style="width: 15%;">Current Qty</th>
 							<th>Rate</th>
 							<th>Stock Value</th>
@@ -142,8 +140,8 @@
 							<td style="font-size: 11px;padding: 2px 6px;font-weight: 900;">Damage</td>
 							<td style="font-size: 11px;padding: 2px 6px;font-weight: 900;">Sold</td>
 							<td style="font-size: 11px;padding: 2px 6px;font-weight: 900;">Return</td>
-							<td style="font-size: 11px;padding: 2px 6px;font-weight: 900;">In</td>
-							<td style="font-size: 11px;padding: 2px 6px;font-weight: 900;">Out</td>
+							<!-- <td style="font-size: 11px;padding: 2px 6px;font-weight: 900;">In</td>
+							<td style="font-size: 11px;padding: 2px 6px;font-weight: 900;">Out</td> -->
 							<td colspan="3"></td>
 						</tr>
 						<tr v-for="(product, sl) in stock">
@@ -156,21 +154,19 @@
 							<td>{{ product.damaged_quantity }}</td>
 							<td>{{ product.sold_quantity }}</td>
 							<td>{{ product.sales_returned_quantity }}</td>
-							<td>{{ product.transferred_to_quantity}}</td>
-							<td>{{ product.transferred_from_quantity}}</td>
+							<!-- <td>{{ product.transferred_to_quantity}}</td>
+							<td>{{ product.transferred_from_quantity}}</td> -->
 							<td>{{ product.current_quantity }} {{ product.Unit_Name }}</td>
 							<td style="text-align: right;">{{ product.Product_Purchase_Rate | decimal }}</td>
 							<td style="text-align: right;">{{ product.stock_value | decimal }}</td>
 						</tr>
-					</tbody>
-					<tfoot>
 						<tr>
-							<th colspan="11" style="text-align:right;">Total</th>
+							<th colspan="9" style="text-align:right;">Total</th>
 							<th>{{ stock.reduce((prev, curr) => {return prev + parseFloat(curr.current_quantity)}, 0) | decimal }}</th>
 							<th></th>
 							<th>{{ totalStockValue | decimal }}</th>
 						</tr>
-					</tfoot>
+					</tbody>
 				</table>
 			</div>
 		</div>

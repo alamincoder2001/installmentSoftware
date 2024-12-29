@@ -603,7 +603,7 @@
 						})
 						.then(res => {
 							let r = res.data;
-							this.customers = r.filter(item => item.status == 'a')
+							this.customers = r.filter(item => item.status == 'a' && item.branch_id == this.selectedBranch.branch_id)
 							loading(false)
 						})
 				} else {
@@ -633,7 +633,14 @@
 						})
 						.then(res => {
 							let r = res.data;
-							this.products = r.filter(item => item.status == 'a');
+							if (this.sales.salesType == 'wholesale') {
+								this.products = r.filter(item => item.Product_WholesaleRate > 0 && item.status == 'a' && item.branch_id == this.selectedBranch.branch_id);
+								this.products.map(item => {
+									return item.Product_SellingPrice = item.Product_WholesaleRate;
+								})
+							} else {
+								this.products = r.filter(item => item.status == 'a' && item.branch_id == this.selectedBranch.branch_id);
+							}
 							loading(false)
 						})
 				} else {
@@ -851,7 +858,7 @@
 					this.sales.installment_amount = parseFloat(0).toFixed(2);
 					return;
 				}
-				if(parseFloat(this.sales.due) <= 0){
+				if (parseFloat(this.sales.due) <= 0) {
 					this.sales.installment = 0;
 					this.sales.installment_amount = parseFloat(0).toFixed(2);
 					Swal.fire({

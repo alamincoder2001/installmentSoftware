@@ -252,7 +252,8 @@
                 installPayments: [],
                 paymentProgress: false,
                 userType: '<?php echo $this->session->userdata("accountType"); ?>',
-
+                branchId: "<?= $this->session->userdata("BRANCHid");?>",
+                
                 columns: [{
                         label: 'Sl',
                         field: 'sl',
@@ -417,7 +418,7 @@
                         })
                         .then(res => {
                             let r = res.data;
-                            this.customers = r.filter(item => item.status == 'a')
+                            this.customers = r.filter(item => item.status == 'a' && item.branch_id == this.branchId);
                             loading(false)
                         })
                 } else {

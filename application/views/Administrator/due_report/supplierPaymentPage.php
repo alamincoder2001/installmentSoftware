@@ -227,7 +227,7 @@
 				accounts: [],
 				selectedAccount: null,
 				userType: '<?php echo $this->session->userdata("accountType"); ?>',
-
+				branchId: "<?= $this->session->userdata("BRANCHid");?>",
 				columns: [{
 						label: 'Transaction Id',
 						field: 'SPayment_invoice',
@@ -318,7 +318,7 @@
 						})
 						.then(res => {
 							let r = res.data;
-							this.suppliers = r.filter(item => item.status == 'a')
+							this.suppliers = r.filter(item => item.status == 'a' && item.branch_id == this.branchId);
 							loading(false)
 						})
 				} else {

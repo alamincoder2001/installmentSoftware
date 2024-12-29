@@ -306,7 +306,9 @@ class Products extends CI_Controller
             left join tbl_productcategory pc on pc.ProductCategory_SlNo = p.ProductCategory_ID
             left join tbl_brand b on b.brand_SiNo = p.brand
             left join tbl_unit u on u.Unit_SlNo = p.Unit_ID
-            where p.status = 'a' and p.is_service = 'false' $clauses
+            where p.status = 'a'
+            and p.branch_id = '$this->brunch' 
+            and p.is_service = 'false' $clauses
         ")->result();
 
         $res['stock'] = $stock;

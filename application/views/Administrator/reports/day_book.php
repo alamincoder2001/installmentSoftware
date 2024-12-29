@@ -78,7 +78,7 @@
 							<thead>
 								<tr>
 									<th>Description</th>
-									<th>Amount</th>
+									<th>In Amount</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -263,7 +263,7 @@
 							<thead>
 								<tr>
 									<th>Description</th>
-									<th>Amount</th>
+									<th>Out Amount</th>
 								</tr>
 							</thead>
 							<tbody>

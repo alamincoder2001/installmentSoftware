@@ -223,7 +223,7 @@ if ($module == 'dashboard' or $module == '') {
 			</li>
 		<?php endif; ?>
 
-		<?php if (
+		<!-- <?php if (
 			array_search("product_transfer", $access) > -1
 			|| array_search("transfer_list", $access) > -1
 			|| array_search("received_list", $access) > -1
@@ -271,7 +271,7 @@ if ($module == 'dashboard' or $module == '') {
 
 				</ul>
 			</li>
-		<?php endif; ?>
+		<?php endif; ?> -->
 
 		<?php if (
 			array_search("customer", $access) > -1
